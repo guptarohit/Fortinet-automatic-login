@@ -1,7 +1,30 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os.path
+# Copyright (c) 2017 Rohit Gupta
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following
+# conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+
+from os import path, popen, remove
 import requests
 import getpass
 
@@ -42,22 +65,27 @@ try:
     res = requests.head('http://www.google.co.in')
     print('Already connected. :)')
 except requests.ConnectionError:
+    fn = path.expanduser('~/.fgauthcred')  # filename
 
-    if not os.path.isfile('.fgauthcred'):
+    if not path.isfile(fn):
         print('Enter credentials to login, for the first time. (password will be hidden.)')
 
         username = input('Enter your username : ').strip()
         password = getpass.getpass()
 
         if login(username, password):
-            with open('.fgauthcred', 'w') as f:
+            with open(fn, 'w') as f:
                 f.write(username + '\n' + password + '\n')
+                popen('attrib +h ' + fn)
         else:
-            print('Wrong cred. try again.\n')
+            print('Wrong credentials. Try again.\n')
             username = input('Enter your username : ').strip()
             password = getpass.getpass()
             login(username, password)
     else:
-        with open('.fgauthcred', 'r') as f:
+        with open(fn, 'r') as f:
             (username, password) = [x.strip() for x in f]
-        login(username, password)
+        if not login(username, password):
+            remove(fn)
+            print('Something went wrong with your credentials. Reseting...\nRestart the program again.')
+            input("Press enter to exit ;)")
