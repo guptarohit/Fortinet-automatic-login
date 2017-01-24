@@ -25,8 +25,8 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 from os import path, popen, remove
-import requests
-import getpass
+from requests import post, head, Session, ConnectionError
+from getpass import getpass
 
 
 def login(uname, passw):
@@ -35,7 +35,7 @@ def login(uname, passw):
     headers = \
         {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36'}
 
-    session = requests.Session()
+    session = Session()
 
     res = session.get(url_1, headers=headers)
 
@@ -52,7 +52,7 @@ def login(uname, passw):
 
     url_2 = 'http://192.168.201.6:1000/'
 
-    res = requests.post(url_2, headers=headers, data=payload)
+    res = post(url_2, headers=headers, data=payload)
 
     if 'Failed' in res.text:
         return False
@@ -62,16 +62,16 @@ def login(uname, passw):
 
 
 try:
-    res = requests.head('http://www.google.co.in')
+    res = head('http://www.google.co.in')
     print('Already connected. :)')
-except requests.ConnectionError:
+except ConnectionError:
     fn = path.expanduser('~/.fgauthcred')  # filename
 
     if not path.isfile(fn):
         print('Enter credentials to login, for the first time. (password will be hidden.)')
 
         username = input('Enter your username : ').strip()
-        password = getpass.getpass()
+        password = getpass()
 
         if login(username, password):
             with open(fn, 'w') as f:
@@ -80,7 +80,7 @@ except requests.ConnectionError:
         else:
             print('Wrong credentials. Try again.\n')
             username = input('Enter your username : ').strip()
-            password = getpass.getpass()
+            password = getpass()
             login(username, password)
     else:
         with open(fn, 'r') as f:
