@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2017 Rohit Gupta
@@ -27,6 +26,12 @@
 from os import path, popen, remove
 from requests import post, head, Session, ConnectionError
 from getpass import getpass
+
+
+def _GetchWindows():
+    # This reads only one character.
+    from msvcrt import getch
+    return getch()
 
 
 def login(uname, passw):
@@ -61,31 +66,38 @@ def login(uname, passw):
         return True
 
 
-try:
-    res = head('http://www.google.co.in')
-    print('Already connected. :)')
-except ConnectionError:
-    fn = path.expanduser('~/.fgauthcred')  # filename
+def main():
+    print("Checking connectivity..")
+    try:
+        res = head('http://www.google.co.in')
+        print('Already connected. :)')
+    except ConnectionError:
+        fn = path.expanduser('~/.fgauthcred')  # filename
 
-    if not path.isfile(fn):
-        print('Enter credentials to login, for the first time. (password will be hidden.)')
+        if not path.isfile(fn):
+            print('Enter credentials to login, for the first time. (password will be hidden.)')
 
-        username = input('Enter your username : ').strip()
-        password = getpass()
-
-        if login(username, password):
-            with open(fn, 'w') as f:
-                f.write(username + '\n' + password + '\n')
-                popen('attrib +h ' + fn)
-        else:
-            print('Wrong credentials. Try again.\n')
             username = input('Enter your username : ').strip()
             password = getpass()
-            login(username, password)
-    else:
-        with open(fn, 'r') as f:
-            (username, password) = [x.strip() for x in f]
-        if not login(username, password):
-            remove(fn)
-            print('Something went wrong with your credentials. Reseting...\nRestart the program again.')
-            input("Press enter to exit ;)")
+
+            if login(username, password):
+                with open(fn, 'w') as f:
+                    f.write(username + '\n' + password + '\n')
+                    popen('attrib +h ' + fn)
+            else:
+                print('Wrong credentials. Try again.\n')
+                username = input('Enter your username : ').strip()
+                password = getpass()
+                login(username, password)
+        else:
+            with open(fn, 'r') as f:
+                (username, password) = [x.strip() for x in f]
+            if not login(username, password):
+                remove(fn)
+                print('Something went wrong with your credentials. Reseting...\nRestart the program again.')
+                print("\nPress any key to exit.")
+                _GetchWindows()
+
+
+if __name__ == '__main__':
+    main()
