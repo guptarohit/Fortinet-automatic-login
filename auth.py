@@ -24,6 +24,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 from os import path, popen, remove
+from time import sleep
 from requests import post, head, Session, ConnectionError
 from getpass import getpass
 
@@ -62,7 +63,8 @@ def login(uname, passw):
     if 'Failed' in res.text:
         return False
     else:
-        print('Successfully authenticated. Now you may close this window. :)')
+        print('Successfully authenticated, now closing this window. Bye.. :)')
+        sleep(.777)
         return True
 
 
