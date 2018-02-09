@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fguptarohit%2FFortinet-automatic-login.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fguptarohit%2FFortinet-automatic-login?ref=badge_shield)
+
 .. -*-restructuredtext-*-
 
 Fortinet Automatic Login
@@ -17,3 +19,7 @@ Installation
 ------------
 
 **Download** `link <https://raw.githubusercontent.com/guptarohit/Fortinet-automatic-login/master/auth.exe>`_
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fguptarohit%2FFortinet-automatic-login.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fguptarohit%2FFortinet-automatic-login?ref=badge_large)
